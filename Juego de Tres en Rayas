@@ -1,0 +1,86 @@
+#include <iostream>
+
+using namespace std;
+
+const int TAMANIO = 3;
+char tablero[TAMANIO][TAMANIO];
+
+void inicializarTablero() {
+    for (int i = 0; i < TAMANIO; ++i) {
+        for (int j = 0; j < TAMANIO; ++j) {
+            tablero[i][j] = ' ';
+        }
+    }
+}
+
+void mostrarTablero() {
+    cout << "  0 1 2\n";
+    for (int i = 0; i < TAMANIO; ++i) {
+        cout << i << " ";
+        for (int j = 0; j < TAMANIO; ++j) {
+            cout << tablero[i][j];
+            if (j < TAMANIO - 1) cout << "|";
+        }
+        cout << "\n";
+        if (i < TAMANIO - 1) cout << "  -----\n";
+    }
+}
+
+bool hacerMovimiento(int fila, int columna, char jugador) {
+    if (fila >= 0 && fila < TAMANIO && columna >= 0 && columna < TAMANIO && tablero[fila][columna] == ' ') {
+        tablero[fila][columna] = jugador;
+        return true;
+    }
+    return false;
+}
+
+bool verificarVictoria(char jugador) {
+    for (int i = 0; i < TAMANIO; ++i) {
+        if (tablero[i][0] == jugador && tablero[i][1] == jugador && tablero[i][2] == jugador) return true;
+        if (tablero[0][i] == jugador && tablero[1][i] == jugador && tablero[2][i] == jugador) return true;
+    }
+    if (tablero[0][0] == jugador && tablero[1][1] == jugador && tablero[2][2] == jugador) return true;
+    if (tablero[0][2] == jugador && tablero[1][1] == jugador && tablero[2][0] == jugador) return true;
+    return false;
+}
+
+bool tableroLleno() {
+    for (int i = 0; i < TAMANIO; ++i) {
+        for (int j = 0; j < TAMANIO; ++j) {
+            if (tablero[i][j] == ' ') return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    inicializarTablero();
+    char jugadorActual = 'X';
+    bool victoria = false;
+
+    while (!victoria && !tableroLleno()) {
+        mostrarTablero();
+        int fila, columna;
+        cout << "Jugador " << jugadorActual << ", ingresa fila y columna (ejemplo: 0 0): ";
+        cin >> fila >> columna;
+
+        if (hacerMovimiento(fila, columna, jugadorActual)) {
+            victoria = verificarVictoria(jugadorActual);
+            if (!victoria) {
+                jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+            }
+        } else {
+            cout << "Movimiento inválido. Inténtalo de nuevo.\n";
+        }
+    }
+
+    mostrarTablero();
+
+    if (victoria) {
+        cout << "¡Jugador " << jugadorActual << " gana!\n";
+    } else {
+        cout << "Es un empate.\n";
+    }
+
+    return 0;
+}
