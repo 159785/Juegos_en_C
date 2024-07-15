@@ -14,17 +14,17 @@ void inicializarTablero() {
     }
 }
 
-
+// Funcios para mostrar el tablero en la consola 
 void mostrarTablero() {
-    cout << "  0 1 2\n";
-    for (int i = 0; i < TAMANIO; ++i) {
-        cout << i << " ";
-        for (int j = 0; j < TAMANIO; ++j) {
-            cout << tablero[i][j];
-            if (j < TAMANIO - 1) cout << "|";
+    cout << "  0 1 2\n"; // encabezado de las cumlumnas
+    for (int i = 0; i < TAMANIO; ++i) { // se recorre las filas 
+        cout << i << " "; // encabezado de las filas 
+        for (int j = 0; j < TAMANIO; ++j) { // se recorre las columnas 
+            cout << tablero[i][j]; // se muestra el valor de cada celda vacia 
+            if (j < TAMANIO - 1) cout << "|"; // aqui se muestra los separadores verticales 
         }
-        cout << "\n";
-        if (i < TAMANIO - 1) cout << "  -----\n";
+        cout << "\n"; // nueva linea despues de cada fila 
+        if (i < TAMANIO - 1) cout << "  -----\n"; // se muestra los separadores horizontales 
     }
 }
 
