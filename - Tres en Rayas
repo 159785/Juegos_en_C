@@ -1,9 +1,9 @@
-#include <iostream>
+#include <iostream> // Libreria estandar para entrada y salida 
 
 using namespace std;
 
-const int TAMANIO = 3;
-char tablero[TAMANIO][TAMANIO];
+const int TAMANIO = 3; //Se define el tamaño de la matriz que seria de (3x3) 
+char tablero[TAMANIO][TAMANIO]; //Aqui es la matriz que representa el tablero de el juego 
 
 void inicializarTablero() {
     for (int i = 0; i < TAMANIO; ++i) {
