@@ -5,10 +5,11 @@ using namespace std;
 const int TAMANIO = 3; //Se define el tamaño de la matriz que seria de (3x3) 
 char tablero[TAMANIO][TAMANIO]; //Aqui es la matriz que representa el tablero de el juego 
 
+//Funcion para inicializar el tablero con espacios vacios 
 void inicializarTablero() {
-    for (int i = 0; i < TAMANIO; ++i) {
-        for (int j = 0; j < TAMANIO; ++j) {
-            tablero[i][j] = ' ';
+    for (int i = 0; i < TAMANIO; ++i) { // Recorremos filas
+        for (int j = 0; j < TAMANIO; ++j) { // Recorremos columnas 
+            tablero[i][j] = ' '; // Se inicia cada celda con un espacio basio 
         }
     }
 }
