@@ -14,6 +14,7 @@ void inicializarTablero() {
     }
 }
 
+
 void mostrarTablero() {
     cout << "  0 1 2\n";
     for (int i = 0; i < TAMANIO; ++i) {
