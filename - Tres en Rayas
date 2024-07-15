@@ -28,25 +28,31 @@ void mostrarTablero() {
     }
 }
 
+// Funcion para realisar movimientos en el tablero 
 bool hacerMovimiento(int fila, int columna, char jugador) {
+// Aqui se verifica si la pocision esta dentro de los limites y tambien que este vacia 
     if (fila >= 0 && fila < TAMANIO && columna >= 0 && columna < TAMANIO && tablero[fila][columna] == ' ') {
-        tablero[fila][columna] = jugador;
-        return true;
+        tablero[fila][columna] = jugador; // colocamos simbolo de el jugador en la celda 
+        return true; // se verifica si es verdadero 
     }
-    return false;
+    return false; // se verifica si es falso 
 }
 
-bool verificarVictoria(char jugador) {
+// funcion para verificar si un jugador gana 
+bool verificarVictoria(char jugador) { 
+    // Verificamos filas y columnas 
     for (int i = 0; i < TAMANIO; ++i) {
-        if (tablero[i][0] == jugador && tablero[i][1] == jugador && tablero[i][2] == jugador) return true;
-        if (tablero[0][i] == jugador && tablero[1][i] == jugador && tablero[2][i] == jugador) return true;
+        if (tablero[i][0] == jugador && tablero[i][1] == jugador && tablero[i][2] == jugador) return true; // verificamos filas 
+        if (tablero[0][i] == jugador && tablero[1][i] == jugador && tablero[2][i] == jugador) return true; // verificamos columnas 
     }
-    if (tablero[0][0] == jugador && tablero[1][1] == jugador && tablero[2][2] == jugador) return true;
-    if (tablero[0][2] == jugador && tablero[1][1] == jugador && tablero[2][0] == jugador) return true;
+    // verificamos diagonlaes 
+    if (tablero[0][0] == jugador && tablero[1][1] == jugador && tablero[2][2] == jugador) return true; // diagonale principal 
+    if (tablero[0][2] == jugador && tablero[1][1] == jugador && tablero[2][0] == jugador) return true; // diagonal secundaria 
     return false;
 }
 
-bool tableroLleno() {
+// funcion para verificar si el tablero esta lleno esto seria igual a un empate 
+bool tableroLleno() { 
     for (int i = 0; i < TAMANIO; ++i) {
         for (int j = 0; j < TAMANIO; ++j) {
             if (tablero[i][j] == ' ') return false;
@@ -56,42 +62,43 @@ bool tableroLleno() {
 }
 
 int main() {
-    inicializarTablero();
-    char jugadorActual = 'X';
-    bool victoria = false;
+    inicializarTablero(); // iniciamos el tablero 
+    char jugadorActual = 'X'; // comienza jugador x 
+    bool victoria = false; // no hay victoria es falso  
 
-    while (!victoria && !tableroLleno()) {
-        mostrarTablero();
+    //Bucle princiál de el juego 
+    while (!victoria && !tableroLleno()) { // mientras no tengamos victoria el tablero no esta lleno 
+        mostrarTablero(); // Mostar el tablero 
         int fila, columna;
         if (jugadorActual == 'X') {
-            cout << "Turno del Jugador 1 (X), ingresa fila y columna (ejemplo: 0 0): ";
+            cout << "Turno del Jugador 1 (X), ingresa fila y columna (ejemplo: 0 0): "; // Mensaje para el jugador numero 1 
         } else {
-            cout << "Turno del Jugador 2 (O), ingresa fila y columna (ejemplo: 0 0): ";
+            cout << "Turno del Jugador 2 (O), ingresa fila y columna (ejemplo: 0 0): "; // Mensaje para el jugador numero 2 
         }
-        cin >> fila >> columna;
+        cin >> fila >> columna; // leemos filas y columnas 
 
-        if (hacerMovimiento(fila, columna, jugadorActual)) {
-            victoria = verificarVictoria(jugadorActual);
+        if (hacerMovimiento(fila, columna, jugadorActual)) { // nuevo movimiento 
+            victoria = verificarVictoria(jugadorActual);     // se verifica si el jugador actual ha ganado 
             if (!victoria) {
-                jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+                jugadorActual = (jugadorActual == 'X') ? 'O' : 'X'; // cambiamos al otro jugador 
             }
         } else {
-            cout << "Movimiento inválido. Inténtalo de nuevo.\n";
+            cout << "Movimiento inválido. Inténtalo de nuevo.\n"; // mensaje de error si el movimeito es invalido 
         }
     }
 
-    mostrarTablero();
+    mostrarTablero(); // mostramos el tablero final  
 
-    if (victoria) {
+    if (victoria) { // verificamos si hay victoria 
         if (jugadorActual == 'X') {
-            cout << "¡Jugador 1 (X) gana!\n";
+            cout << "¡Jugador 1 (X) gana!\n"; // mensaje de victoria para jugador numero 1
         } else {
-            cout << "¡Jugador 2 (O) gana!\n";
+            cout << "¡Jugador 2 (O) gana!\n"; // mensaje de victoria para el juagador numero 2 
         }
     } else {
-        cout << "Es un empate.\n";
+        cout << "Es un empate.\n"; // mensaje si es un empate 
     }
 
-    return 0;
+    return 0; // y el fin de el progrma 
 }
 
