@@ -10,7 +10,7 @@ using namespace std;
 int TAMANIO;            // Variable para almacenar el tamaño del laberinto
 char **laberinto;       // Puntero doble para la matriz del laberinto
 bool **visitado;        // Puntero doble para la matriz de celdas visitadas
-int pasos = 0;          // Contor de pasos para resolver el laberinto
+int pasos = 0;          // Contador de pasos para resolver el laberinto
 
 // Se inicia con una función para inicializar el laberinto y la matriz de celdas visitadas
 void inicializarLaberinto(int tamanio) {
