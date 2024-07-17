@@ -117,7 +117,7 @@ int main() {
         printf("No se pudo encontrar una salida.\n");  // Imprimir mensaje si no se encuentra una salida
     }
 
-    liberarLaberinto(TAMANIO);                   // Liberar memoria del laberinto
+    liberarLaberinto(TAMANIO);                   
 
-    return 0;                                    // Finalizar el programa
+    return 0;                                    
 }
