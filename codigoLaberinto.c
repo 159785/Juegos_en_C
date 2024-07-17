@@ -1,102 +1,123 @@
-#include <stdio.h> // entrada y salida de datos 
-#include <stdlib.h> // nos ayuda con las funciones estandar, como rand y srand 
-#include <time.h> // nos ayuda con el manejo del tiempo 
+#include <stdio.h>     // Librería para la entrada y salida estándar
+#include <vector>       // Librería para utilizar el contenedor vector
+#include <ctime>        // Librería que nos ayudara a trabajar con funciones de tiempo
+#include <cstdlib>      // Librería para funciones generales de propósito, esto inclye la generación de números aleatorios
+#include <algorithm>    // Librería para algoritmos estándar 
+#include <random>       // Librería para generar números aleatorios
 
-#define ANCHO 20 // aqui vamos a definir el ancho y el alto del laberinto 
-#define ALTO 10
+using namespace std;    
 
+int TAMANIO;            // Variable para almacenar el tamaño del laberinto
+char **laberinto;       // Puntero doble para la matriz del laberinto
+bool **visitado;        // Puntero doble para la matriz de celdas visitadas
+int pasos = 0;          // Contor de pasos para resolver el laberinto
 
-void generarLaberinto(char laberinto[ALTO][ANCHO]) {
-    int i, j; // declaramos variables de interacion de filas y columnas del laberinto 
-    
-    // Inicializar el laberinto con paredes
-    for (i = 0; i < ALTO; i++) { 
-        for (j = 0; j < ANCHO; j++) {
-            laberinto[i][j] = '*'; // Se asigna '*' a cada posición del laberinto
+// Se inicia con una función para inicializar el laberinto y la matriz de celdas visitadas
+void inicializarLaberinto(int tamanio) {
+    laberinto = new char*[tamanio];          // se le asigna memoria para las filas del laberinto
+    visitado = new bool*[tamanio];           // se le asigna memoria para las filas de la matriz visitada
+    for (int i = 0; i < tamanio; ++i) {      // Y se recorre sobre cada fila
+        laberinto[i] = new char[tamanio];    // se le asigna memoria para las columnas del laberinto
+        visitado[i] = new bool[tamanio];     // se le asigna memoria para las columnas de la matriz visitada
+        for (int j = 0; j < tamanio; ++j) {  // y se recorre sobre cada columna
+            laberinto[i][j] = '#';           // Iniciamos todas las celdas como paredes
+            visitado[i][j] = false;          // Iniciamos todas las celdas como no visitadas
         }
     }
-    
-    // Generar caminos aleatorios dentro del laberinto 
-    for (i = 1; i < ALTO - 1; i++) {
-        for (j = 1; j < ANCHO - 1; j++) {
-            if (rand() % 3 == 0) {
-                laberinto[i][j] = ' ';
+}
+
+// luego otra función para liberar la memoria del laberinto y la matriz de celdas visitadas
+void liberarLaberinto(int tamanio) {
+    for (int i = 0; i < tamanio; ++i) {      // recorremos sobre cada fila
+        delete[] laberinto[i];               // liberamos memoria para las columnas del laberinto
+        delete[] visitado[i];                // Liberamos memoria para las columnas de la matriz visitada
+    }
+    delete[] laberinto;                      // Liberamos memoria para las filas del laberinto
+    delete[] visitado;                       // Liberamos memoria para las filas de la matriz visitada
+}                                            // LIBERAMOS memorio nos ayudara a generar los laberitos aleatorios cada ves que iniciamos uno este no imprimira el mismo 
+
+// esta función nos ayudara a mostrar el laberinto en la consola
+void mostrarLaberinto(int tamanio) {
+    for (int i = 0; i < tamanio; ++i) {      // Recorremos sobre cada fila
+        for (int j = 0; j < tamanio; ++j) {  // Recorremos sobre cada columna
+            printf("%c ", laberinto[i][j]);  // Imprimir cada celda del laberinto
+        }
+        printf("\n");                        // Imprimir un salto de línea al final de cada fila
+    }
+}
+
+// esta funcion sierve para verificar si una celda es válida y esta dentro de los límites y no visitada
+bool esValido(int x, int y, int tamanio) {
+    return x >= 0 && x < tamanio && y >= 0 && y < tamanio && !visitado[x][y];  // se retornara verdadero si la celda está dentro de los límites y no ha sido visitada
+}
+
+// Función para generar el laberinto 
+void generarLaberinto(int x, int y, int tamanio) {
+    visitado[x][y] = true;                   // se marcara la celda actual como visitada
+    laberinto[x][y] = ' ';                   // se marcara la celda actual como camino
+
+    int direcciones[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};  // esta son las direccines para poder moverse 
+    random_device rd;                        
+    mt19937 g(rd());                         // aqui es un generador de números aleatorios
+    shuffle(begin(direcciones), end(direcciones), g);  // se mesclaran las direcciones 
+
+    for (auto dir : direcciones) {           // Intentar moverse en cada dirección
+        int nx = x + dir[0] * 2, ny = y + dir[1] * 2;  // Calcular la nueva posición
+        if (esValido(nx, ny, tamanio)) {     // Verificar si la nueva posición es válida
+            laberinto[x + dir[0]][y + dir[1]] = ' ';  // Crear camino intermedio
+            generarLaberinto(nx, ny, tamanio);  
+        }
+    }
+}
+
+// en esta función recursiva se resolver el laberinto
+bool resolverLaberinto(int x, int y, int tamanio) {
+    if (x == tamanio - 2 && y == tamanio - 2) {  // Si llegamos a la salida
+        laberinto[x][y] = 'S';                   // Marcar la salida
+        return true;                             // Retornar verdadero
+    }
+
+    if (laberinto[x][y] == ' ' || laberinto[x][y] == 'E') {  // Verificar si la celda es un camino entrada
+        laberinto[x][y] = '.';                    // Marcar la celda como visitada
+
+        int direcciones[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};  // Direcciones para moverse 
+        for (auto dir : direcciones) {           // Intentar moverse en cada dirección
+            int nx = x + dir[0], ny = y + dir[1]; // Calcular la nueva posición
+            if (resolverLaberinto(nx, ny, tamanio)) {  
+                pasos++;                           // Incrementar el contador de pasos
+                return true;                       // Retornar verdadero
             }
         }
+        laberinto[x][y] = ' ';                    // Desmarcar la celda si no se encuentra la salida
     }
-    
-    // Asegurar un camino desde la entrada hasta la salida
-    for (i = 1; i < ALTO - 1; i++) {
-        laberinto[i][1] = ' ';
-    }
-    for (j = 1; j < ANCHO - 1; j++) {
-        laberinto[ALTO - 2][j] = ' ';
-    }
-    
-    // Colocar entrada y salida
-    laberinto[1][0] = 'E';
-    laberinto[ALTO - 2][ANCHO - 1] = 'S';
-}
-
-void imprimirLaberinto(char laberinto[ALTO][ANCHO]) {
-    int i, j;
-    for (i = 0; i < ALTO; i++) {
-        for (j = 0; j < ANCHO; j++) {
-            printf("%c", laberinto[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-int resolverLaberinto(char laberinto[ALTO][ANCHO]) {
-    int x = 1, y = 0; // Posición inicial (entrada)
-    int pasos = 0;
-    char movimiento;
-
-    while (laberinto[y][x] != 'S') {
-        imprimirLaberinto(laberinto);
-        printf("Posicion actual: (%d, %d)\n", x, y);
-        printf("\t IMPORTANTE. Recuerda que si el movimiento no es valido tienes oportunidad para que sigas intentandolo\n");
-        printf("\t por esa razon mira el laberinto y analiza bien tu proximo movimiento\n");
-        printf("Ingrese movimiento (a: arriba, b: abajo, c: izquierda, d: derecha): ");
-        scanf(" %c", &movimiento);
-
-        switch(movimiento) {
-            case 'a':
-                if (y > 0 && laberinto[y-1][x] != '*') y--;
-                break;
-            case 'b':
-                if (y < ALTO-1 && laberinto[y+1][x] != '*') y++;
-                break;
-            case 'c':
-                if (x > 0 && laberinto[y][x-1] != '*') x--;
-                break;
-            case 'd':
-                if (x < ANCHO-1 && laberinto[y][x+1] != '*') x++;
-                break;
-            default:
-                printf("Movimiento invalido.\n");
-                continue;
-        }
-
-        pasos++;
-    }
-
-    return pasos;
+    return false;                                // Retornar falso si no se encuentra la salida
 }
 
 int main() {
-    char laberinto[ALTO][ANCHO];
-    srand(time(NULL));
+    srand(time(0));                             
 
-    generarLaberinto(laberinto);
-    printf("Laberinto generado:\n");
-    imprimirLaberinto(laberinto);
+    do {
+        TAMANIO = 13 + rand() % 13;              // Generar tamaño aleatorio 
+    } while (TAMANIO % 2 == 0);                  
 
-    printf("\nComienza a resolver el laberinto!\n");
-    int pasos = resolverLaberinto(laberinto);
+    inicializarLaberinto(TAMANIO);               // Inicializar el laberinto
+    generarLaberinto(1, 1, TAMANIO);             // Generar laberinto desde (1,1)
+    laberinto[1][1] = 'E';                       // Marcar la entrada
+    laberinto[TAMANIO - 2][TAMANIO - 2] = ' ';   // Marcar la salida
 
-    printf("\n¡FELICIDADES! Has llegado a la salida en %d pasos.\n", pasos);
+    printf("Laberinto generado (Tamaño: %d):\n", TAMANIO);  // Imprimir el tamaño del laberinto generado
+    mostrarLaberinto(TAMANIO);                   // Mostrar el laberinto generado
 
-    return 0;
+    pasos = 0;                                   // Reiniciar el contador de pasos
+    if (resolverLaberinto(1, 1, TAMANIO)) {      // Intentar resolver el laberinto desde la entrada
+        printf("\nLaberinto resuelto:\n");       // Imprimir mensaje si se resuelve el laberinto
+        mostrarLaberinto(TAMANIO);               // Mostrar el laberinto resuelto
+        printf("\nPasos necesarios para resolver el laberinto: %d\n", pasos);  // Imprimir el número de pasos necesarios
+    } else {
+        printf("No se pudo encontrar una salida.\n");  // Imprimir mensaje si no se encuentra una salida
+    }
+
+    liberarLaberinto(TAMANIO);                   // Liberar memoria del laberinto
+
+    return 0;                                    // Finalizar el programa
 }
