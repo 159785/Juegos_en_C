@@ -1,8 +1,8 @@
 #include <stdio.h> // entrada y salida de datos 
 #include <stdlib.h> // nos ayuda con las funciones estandar, como rand y srand 
-#include <time.h> // nos ayuda con el manejo deltiempo 
+#include <time.h> // nos ayuda con el manejo del tiempo 
 
-#define ANCHO 20 // aqui vamos a definor el ancho y el alto del laberinto 
+#define ANCHO 20 // aqui vamos a definir el ancho y el alto del laberinto 
 #define ALTO 10
 
 
