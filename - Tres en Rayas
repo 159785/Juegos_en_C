@@ -1,4 +1,4 @@
-#include <iostream> // libreria para entrada y salida 
+#include <iostream> // libreria para entrada y salida  
 
 using namespace std;
 
